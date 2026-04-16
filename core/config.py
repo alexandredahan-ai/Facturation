@@ -25,15 +25,19 @@ class Config(BaseSettings):
     napta_api_base: str = Field("https://api.napta.io/integration/v0", validation_alias="NAPTA_API_BASE")
     
     # Sellsy API
-    sellsy_api_key: str = Field(..., validation_alias="SELLSY_API_KEY")
+    sellsy_client_id: str = Field(..., validation_alias="SELLSY_CLIENT_ID")
+    sellsy_client_secret: str = Field(..., validation_alias="SELLSY_CLIENT_SECRET")
     sellsy_api_base: str = Field("https://api.sellsy.com/v2", validation_alias="SELLSY_API_BASE")
     
     # Slack Alerting
     slack_webhook_url: str = Field(..., validation_alias="SLACK_WEBHOOK_URL")
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = 'utf-8'
+    # To ignore extra env vars without failing Pydantic V2 check
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "extra": "ignore"
+    }
 
 # Instance globale à importer
 settings = Config()

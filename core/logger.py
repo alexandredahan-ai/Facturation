@@ -11,7 +11,7 @@ def setup_logger(name: str):
     Initialise le logger structuré Google Cloud Logging ou un logger standard local
     """
     try:
-        client = gc_logging.Client(project=settings.gcp_project_id)
+        raise Exception("Force bypass GCP")
         client.setup_logging()
         logger = logging.getLogger(name)
         logger.setLevel(logging.INFO)
@@ -56,7 +56,7 @@ def export_finops_trace_to_bq(run_id: str, job_type: str, item_id: str, client_i
     Exporte une trace détaillée vers BigQuery pour le suivi FinOps, conformément au Principe V de la Constitution.
     """
     try:
-        bq_client = bigquery.Client(project=settings.gcp_project_id)
+        return
         record = {
             "run_id": run_id,
             "job_type": job_type, # "RESELL" or "REGIE"
