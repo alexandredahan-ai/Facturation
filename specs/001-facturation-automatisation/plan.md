@@ -11,27 +11,25 @@
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
 **Language/Version**: Python 3.11+
-**Primary Dependencies**: google-cloud-bigquery, google-cloud-logging, requests (or similar)
-**Storage**: BigQuery, GCS
-**Testing**: pytest
+**Primary Dependencies**: `google-cloud-bigquery`, `google-cloud-logging`, `requests`, `google-api-python-client` (for sheets), `tenacity` (for exponential backoff)
+**Storage**: BigQuery, GCS (for logging/exporting traces)
+**Testing**: `pytest`, `responses` (or similar request mocking for Napta)
 **Target Platform**: GCP Cloud Run Jobs (Docker)
 **Project Type**: Standalone Python Script / Pipeline
-**Performance Goals**: Handle Resell and Régie pipelines efficiently under API limits (Napta 100req/10s)
-**Constraints**: Robust retries for 429 constraints, OAuth2 auth with 2h token lifecycle
-**Scale/Scope**: Automated billing data transfer from Sheets/BQ/Napta to Sellsy in jobs
+**Performance Goals**: Max 100req/10s on Napta API, process one month of data in < 15 minutes.
+**Constraints**: OAuth2 Client Credentials (2h token validity), API Rate Limits.
+**Scale/Scope**: Monthly billing runs for dozens of clients with hundreds of entries.
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [x] **Architecture Modulaire**: Distinct modules for `napta_client.py`, `bq_client.py`, `sellsy_client.py`. No agentic frameworks in pipeline code.
+- [x] **Naming Convention Bilingue**: Comments/Docstrings in French, Code Names (vars, functions) in English.
+- [x] **Tests Unitaires**: Pytest strictly adopted.
+- [x] **Résilience & Backoff**: Exponential backoff integrated for 429 errors.
+- [x] **Observabilité**: Cloud Logging and BQ/GCS exports configured natively.
 
 ## Project Structure
 

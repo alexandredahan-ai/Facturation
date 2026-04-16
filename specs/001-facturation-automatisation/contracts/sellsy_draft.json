@@ -1,0 +1,12 @@
+{
+  "client_id": 12345,
+  "date": "2026-05-15",
+  "subject": "Facturation GCP - Avril 2026",
+  "items": [
+    {
+      "description": "Consommation Compute Engine",
+      "quantity": 1,
+      "amount": 1050.50
+    }
+  ]
+}

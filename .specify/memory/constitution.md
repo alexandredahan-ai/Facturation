@@ -1,50 +1,72 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- Sync Impact Report
+- Version change: Initial → 1.0.0
+- Modified principles:
+  - PRINCIPLE_1_NAME → Architecture Modulaire & Job Autonome
+  - PRINCIPLE_2_NAME → Naming Convention Bilingue
+  - PRINCIPLE_3_NAME → Tests Unitaires (Pytest)
+  - PRINCIPLE_4_NAME → Résilience & Backoff (429)
+  - PRINCIPLE_5_NAME → Observabilité Cloud Logging & Export BQ/GCS
+- Added sections:
+  - Architecture & Technologies
+  - Logique d'Implémentation & Workflow (Mock Régie)
+- Removed sections: N/A
+- Templates requiring updates:
+  - .specify/templates/plan-template.md (⚠ pending - update Testing to explicitly reference Pytest, Project Type to Cloud Run Jobs)
+  - .specify/templates/spec-template.md (✅ updated)
+  - .specify/templates/tasks-template.md (✅ updated)
+- Follow-up TODOs: Attente des credentials Napta (API v0) pour la partie Régie.
+-->
+# Facturation Automatisation (Resell & Régie) Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Architecture Modulaire & Job Autonome
+Each connector must reside in its own dedicated, isolated module (`napta_client.py`, `sellsy_client.py`, `bq_client.py`, `sheets_client.py`). Orchestration is separate with one main orchestrator per job (Resell vs. Régie). Any pre-existing agentic layers (i.e. Google ADK code) MUST be removed in order to run as a standalone Python script on Cloud Run Jobs.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Naming Convention Bilingue
+Code and documentation MUST mix languages strictly according to this rule:
+- Comments and documentations MUST be written in French.
+- Variable names, functions, classes, and file names MUST be written in English.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Tests Unitaires (Pytest)
+Comprehensive unit testing is mandatory. Tests MUST be written using the `pytest` framework and properly validate logic independently of external APIs via mocking.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Résilience & Backoff (429)
+The pipeline MUST include robust API error handling. 
+- Implement Exponential Backoff retry strategies, extremely critical for HTTP 429 Too Many Requests errors (specifically Napta: 100 req/10s, 50k/day, 750k/month).
+- Explicit alerts must be emitted for edge cases like unrecognized clients when pushing drafts to Sellsy.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Observabilité Cloud Logging & Export
+Monitoring must rely strictly on structured Cloud Logging. Data exports or reports required for FinOps trace tracking must be sent directly to BigQuery and/or Google Cloud Storage (GCS).
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Architecture & Technologies
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- **Runtime**: Cloud Run Jobs, Docker.
+- **Language**: Python 3.11+
+- **APIs & Sources**:
+  - BigQuery (GCP Billing, table `resell_converteo`)
+  - Cloud Channel API
+  - Google Sheets API (Sheet DV360, 22 columns)
+  - API Napta v0 (OAuth2 Client Credentials, 2h token validity). Endpoints: `/time_entries`, `/assignments`, `/projects`, `/users`, `/leaves`
+- **Destination**: API Sellsy (POST factures brouillon / draft invoices)
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+*Business logic rules (Régie)*:
+- TJM (Daily Rate) is located in `assignments.daily_fee_info`.
+- `time_entries` filter using `approval_status=approved` (invoice validated days only).
+- `leaves` handle half-days (`starts_at_midday`, `ends_at_midday`).
+- Pagination: cursor-based (limit 1-500).
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Logique d'Implémentation & Workflow
+
+The delivery and development workflow MUST follow this sequence based on current blockers:
+1. **Pipeline Resell (GCP & DV360)**: Currently unblocked. Can be developed end-to-end (BQ Extraction → Margins Calculation → Sellsy POST).
+2. **Connecteur Sellsy**: Must be developed as a common component shared between both pipelines.
+3. **Pipeline Régie (Napta)**: A skeleton must be built initially with mocked data adhering exactly to the API Napta v0 documentation, until the OAuth2 Napta credentials are provided. Logique métier must be validated on these mocks.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- All Pull Requests or generated features MUST strictly abide by the English variables / French comments naming convention.
+- Modifications to core dependencies or the architecture (e.g., adding a new tool outside standard python environment/GCP APIs) require an amendment to this Project Constitution.
+- Missing credentials (e.g., Napta) are temporary states and must not halt progress on structural/mocking development.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-04-15 | **Last Amended**: 2026-04-15
