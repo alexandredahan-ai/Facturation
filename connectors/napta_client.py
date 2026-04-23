@@ -140,6 +140,22 @@ class NaptaClient:
         app_logger.info(f"Time entries validées : {len(validated)}/{len(all_entries)}")
         return validated
 
+    def fetch_time_entries_for_projects(self, project_napta_ids: List[int], start_date: str, end_date: str) -> List[Dict[str, Any]]:
+        """
+        Récupère les time entries ciblées par project_ids + période.
+        Utilise le filtre serveur project.napta_id[in] + date[ge]/date[le].
+        Batché par lots de 50 pour éviter les URLs trop longues.
+        """
+        if not project_napta_ids:
+            return []
+        app_logger.info(f"Extraction Time Entries ciblées : {len(project_napta_ids)} projets, {start_date} → {end_date}")
+        results = self._batched_fetch(
+            "/time_entries", "project.napta_id[in]", project_napta_ids,
+            extra_params={"date[ge]": start_date, "date[le]": end_date},
+        )
+        app_logger.info(f"Time entries ciblées récupérées : {len(results)}")
+        return results
+
     def _batched_fetch(self, endpoint: str, filter_key: str, ids: List[int],
                        extra_params: Optional[dict] = None, batch_size: int = 50) -> List[Dict[str, Any]]:
         """

@@ -52,34 +52,41 @@ def fetch_all_sellsy_companies(client: SellsyClient) -> List[Dict]:
     return all_companies
 
 
-def fetch_napta_client_names(napta: NaptaClient, start: str, end: str) -> Dict[str, int]:
+def fetch_napta_client_names(napta: NaptaClient, start: str, end: str) -> Tuple[Dict[str, int], Dict[str, List[int]]]:
     """
     Récupère les noms de clients Napta uniques à partir des projets
     ayant des time entries validées sur la période.
-    Retourne { client_name: nb_projets }.
+    Retourne (client_counts, client_project_ids) :
+      - { client_name: nb_projets }
+      - { client_name: [project_napta_id, ...] }
     """
     app_logger.info(f"Extraction time entries Napta {start} → {end}...")
     entries = napta.fetch_validated_time_entries(start, end)
     if not entries:
         app_logger.warning("Aucune time entry.")
-        return {}
+        return {}, {}
 
     project_ids = list({
-        te.get("project", {}).get("napta_id")
+        (te.get("project") or {}).get("napta_id")
         for te in entries
-        if te.get("project", {}).get("napta_id")
+        if (te.get("project") or {}).get("napta_id")
     })
     app_logger.info(f"{len(entries)} time entries, {len(project_ids)} projets uniques")
 
     projects = napta.fetch_projects(project_ids)
 
     client_counts: Dict[str, int] = {}
+    client_project_ids: Dict[str, List[int]] = {}
     for p in projects:
         name = (p.get("client") or "").strip()
-        if name:
+        pid = (p.get("id") or {}).get("napta_id")
+        if name and pid:
             client_counts[name] = client_counts.get(name, 0) + 1
+            if name not in client_project_ids:
+                client_project_ids[name] = []
+            client_project_ids[name].append(pid)
 
-    return client_counts
+    return client_counts, client_project_ids
 
 
 def normalize(name: str) -> str:
@@ -136,6 +143,7 @@ def fuzzy_match(
 def generate_csv(
     matches: List[Tuple],
     napta_counts: Dict[str, int],
+    napta_project_ids: Dict[str, List[int]],
     sellsy_companies: List[Dict],
     output_path: str,
 ):
@@ -158,12 +166,14 @@ def generate_csv(
             "sellsy_type",
             "match_score",
             "VALIDE (oui/non)",
+            "napta_project_ids",
         ])
 
         matched = [m for m in matches if m[1] is not None]
         unmatched = [m for m in matches if m[1] is None]
 
         for napta_name, sid, sname, stype, score in sorted(matched, key=lambda x: -x[4]):
+            pids = "|".join(str(i) for i in napta_project_ids.get(napta_name, []))
             writer.writerow([
                 napta_name,
                 napta_counts.get(napta_name, 0),
@@ -172,6 +182,7 @@ def generate_csv(
                 stype,
                 score,
                 "oui" if score >= 0.8 else "",
+                pids,
             ])
 
         # ── Section 2 : Non matchés ──
@@ -185,9 +196,11 @@ def generate_csv(
             "sellsy_type",
             "match_score",
             "VALIDE (oui/non)",
+            "napta_project_ids",
         ])
 
         for napta_name, _, _, _, _ in sorted(unmatched, key=lambda x: -napta_counts.get(x[0], 0)):
+            pids = "|".join(str(i) for i in napta_project_ids.get(napta_name, []))
             writer.writerow([
                 napta_name,
                 napta_counts.get(napta_name, 0),
@@ -196,6 +209,7 @@ def generate_csv(
                 "",
                 "",
                 "",
+                pids,
             ])
 
         # ── Section 3 : Référentiel Sellsy ──
@@ -233,7 +247,7 @@ def main():
     # 2. Récupérer les noms de clients Napta
     print("\n[2/4] Extraction des clients Napta (time entries validées)...")
     napta = NaptaClient()
-    napta_counts = fetch_napta_client_names(napta, args.start, args.end)
+    napta_counts, napta_project_ids = fetch_napta_client_names(napta, args.start, args.end)
     print(f"       {len(napta_counts)} clients Napta uniques")
 
     if not napta_counts:
@@ -249,7 +263,7 @@ def main():
 
     # 4. Générer le CSV
     print(f"\n[4/4] Génération du CSV → {args.output}")
-    generate_csv(matches, napta_counts, sellsy_companies, args.output)
+    generate_csv(matches, napta_counts, napta_project_ids, sellsy_companies, args.output)
     print(f"       Fichier créé : {os.path.abspath(args.output)}")
 
     # Résumé

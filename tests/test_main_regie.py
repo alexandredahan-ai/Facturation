@@ -15,15 +15,17 @@ def test_correlate_tjm_logic(mock_napta_time_entries, mock_napta_assignments, mo
     assert "Globex Inc" in result
 
     # Acme Corp : 1 time entry validée (user 100, project 1, workload 1.0, TJM 800€)
+    # Agrégé : 1 ligne (1.0 jour à 800€/j)
     acme_items = result["Acme Corp"]
     assert len(acme_items) == 1
-    assert acme_items[0]["amount"] == 800.0  # 1.0 jour × 800€
+    assert acme_items[0]["amount"] == 800.0  # TJM
+    assert acme_items[0]["quantity"] == 1.0  # total jours
 
-    # Globex Inc : 2 demi-journées validées (user 200, project 2, workload 0.5, TJM 1000€)
+    # Globex Inc : 2 demi-journées validées → agrégées en 1 ligne (1.0 jour à 1000€/j)
     globex_items = result["Globex Inc"]
-    assert len(globex_items) == 2
-    assert globex_items[0]["amount"] == 500.0  # 0.5 jour × 1000€
-    assert globex_items[1]["amount"] == 500.0
+    assert len(globex_items) == 1
+    assert globex_items[0]["amount"] == 1000.0  # TJM
+    assert globex_items[0]["quantity"] == 1.0  # 0.5 + 0.5
 
     # Pas de client pour le projet orphelin (999) car pas d'assignment
     # L'entry user 300 / project 999 est validée mais ignorée (pas de TJM)
