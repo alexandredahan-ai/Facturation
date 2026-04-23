@@ -87,3 +87,53 @@ def test_create_draft_invoice_alerts_on_sellsy_unknown(mock_slack):
         
     assert exc.value.response.status_code in {400, 404}
     mock_slack.assert_called_once()
+
+
+@pytest.mark.integration
+def test_list_invoices():
+    """Vérifie que list_invoices retourne une liste depuis le Sandbox Sellsy."""
+    client = SellsyClient()
+    invoices = client.list_invoices(limit=5)
+
+    assert isinstance(invoices, list)
+    # Le sandbox a au moins une facture (créée par les tests précédents)
+    assert len(invoices) >= 1
+    # Chaque facture doit avoir un id et un related
+    for inv in invoices:
+        assert "id" in inv
+        assert "related" in inv
+
+
+@pytest.mark.integration
+def test_get_invoice_by_id():
+    """Vérifie qu'on peut récupérer le détail d'une facture existante."""
+    client = SellsyClient()
+
+    # Récupérer un ID de facture existante
+    invoices = client.list_invoices(limit=1)
+    assert len(invoices) >= 1
+    invoice_id = invoices[0]["id"]
+
+    detail = client.get_invoice(invoice_id)
+    assert detail["id"] == invoice_id
+    assert "subject" in detail
+    assert "amounts" in detail
+
+
+@pytest.mark.integration
+def test_list_invoices_filter_by_company():
+    """Vérifie le filtrage par company_id côté client."""
+    client = SellsyClient()
+    sellsy_id = _get_or_create_sandbox_client(client.auth_manager)
+
+    # Créer une facture pour ce client spécifique
+    client.create_draft_invoice(sellsy_id, "Filter Test", [{"description": "Test filtre company", "amount": 42}])
+
+    # Lister avec filtre company_id
+    filtered = client.list_invoices(company_id=sellsy_id, limit=50)
+    assert isinstance(filtered, list)
+    assert len(filtered) >= 1
+    # Toutes les factures retournées doivent être liées à ce client
+    for inv in filtered:
+        company_ids = [r["id"] for r in inv.get("related", []) if r.get("type") == "company"]
+        assert sellsy_id in company_ids

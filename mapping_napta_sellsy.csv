@@ -1,0 +1,188 @@
+﻿=== MAPPING PROPOSE (à valider / corriger) ===
+napta_client_name;napta_nb_projets;sellsy_company_id;sellsy_company_name;sellsy_type;match_score;VALIDE (oui/non)
+Abeille Assurances;2;57866865;Abeille Assurances;client;1.0;oui
+CONVERTEO;53;57866771;Converteo;client;1.0;oui
+MAIF;3;57866730;[TEST]Maif;client;0.85;oui
+
+Lybernet Assurance;1;57866865;Abeille Assurances;client;0.72;
+Amplitude;3;57866713;Air Liquide;prospect;0.6;
+EBRA PRESSE;1;57866794;vfe sans adresse;client;0.59;
+GROUPE L'OREAL;25;57866714;[TEST] Loreal;client;0.59;oui
+OKAIDI SAS;1;57866766;Nomadia;client;0.59;
+Air France;4;57866865;Abeille Assurances;client;0.57;
+INTERSPORT FRANCE;1;57866795;[TEST] Fnac;client;0.57;
+Société Générale SA;2;40438031;Société A (test);prospect;0.57;
+CREDIT AGRICOLE ASSURANCES SOLUTIONS;3;57866865;Abeille Assurances;client;0.56;
+ENGIE HOME SERVICES;1;57866725;[TEST]ENGIE;client;0.55;
+MEILLEURTAUX;1;57866865;Abeille Assurances;client;0.53;
+e-TF1;1;57866788;Ent. VFE 1;client;0.53;
+ADEO SERVICES;1;57866865;Abeille Assurances;client;0.52;
+Air France-KLM;3;57866865;Abeille Assurances;client;0.5;
+BRICOMAN;1;57866799;A Random Company;client;0.5;
+ENGIE - BU France BtoC;25;57866865;Abeille Assurances;client;0.5;
+EVIAN RESORT SAS;1;57866794;vfe sans adresse;client;0.5;
+GEOPOST SA;3;57866777;Test 3;client;0.5;
+L'OREAL FRANCE;7;57866865;Abeille Assurances;client;0.5;
+MERSEN;1;57866791;Americaine one;client;0.5;
+MGEN Union;1;57866791;Americaine one;client;0.5;
+PUM Plastique;1;57866713;Air Liquide;prospect;0.5;
+Pathé Cinémas Services;3;57866865;Abeille Assurances;client;0.5;
+Reelevant;1;57866768;Renault;client;0.5;
+TOTALENERGIES ELECTRICITE ET GAZ France;5;57866778;Entreprise américiane;client;0.5;
+Vestiaire Collective SA;2;57866774;Test Siret 1 et 2;client;0.5;
+GOOGLE CLOUD FRANCE;2;57866865;Abeille Assurances;client;0.49;
+Hermes de Paris Mexico, S.A. de C.V.;1;57866778;Entreprise américiane;client;0.49;
+Bizline SAS;1;57866865;Abeille Assurances;client;0.48;
+Bridgestone;1;57866791;Americaine one;client;0.48;
+CHANEL S.A.S.;4;57866731;[TEST]Chanel;client;0.48;
+Figaro Classifieds;1;57866713;Air Liquide;prospect;0.48;
+Snap Group Limited;1;57866713;Air Liquide;prospect;0.48;
+AEROPORTS DE PARIS;4;57866769;Plus que PRO;client;0.47;
+CA CONSUMER FINANCE (Sofinco);1;57866791;Americaine one;client;0.47;
+Facebook France Sarl;1;57866865;Abeille Assurances;client;0.47;
+Feu Vert;1;57866771;Converteo;client;0.47;
+Fnac Darty;1;57866766;Nomadia;client;0.47;
+GARANCE MUTUELLE;2;57866791;Americaine one;client;0.47;
+VAN CLEEF & ARPELS;3;57866794;vfe sans adresse;client;0.47;
+La Française des Jeux;5;57866791;Americaine one;client;0.46;
+Ride Holding;1;57866791;Americaine one;client;0.46;
+SAINT GOBAIN;2;57866791;Americaine one;client;0.46;
+Stellantis Auto SAS;1;57866773;Test entreprise with simple SIRET;client;0.46;
+
+=== CLIENTS NAPTA SANS MATCH (à remplir à la main) ===
+napta_client_name;napta_nb_projets;sellsy_company_id;sellsy_company_name;sellsy_type;match_score;VALIDE (oui/non)
+Google Ireland Limited;19;;;;;
+Samsung Electronics;15;;;;;
+Manufacture Française des Pneumatiques Michelin;14;;;;;
+ORANGE SA;12;;;;;
+Louis Vuitton Malletier;11;;;;;
+KERING;10;;;;;
+Carrefour Hypermarchés SAS;8;;;;;
+ACCOR SA;7;;;;;
+Sephora SAS;7;;;;;
+LACOSTE OPERATIONS;6;;;;;
+France Télévisions;5;;;;;
+HERMES SELLIER;5;;;;;
+COSMETIQUE ACTIVE INTERNATIONAL;4;;;;;
+ITM ALIMENTAIRE INTERNATIONAL (ITM AI);4;;;;;
+L'Oréal Cmo Usa;4;;;;;
+VALRHONA;4;;;;;
+AMAP;3;;;;;
+BPCE;3;;;;;
+Biocodex SAS;3;;;;;
+CLUB MED;3;;;;;
+ILE-DE-FRANCE MOBILITES;3;;;;;
+Kingfisher Information Technology Services (UK) Limited;3;;;;;
+L'Oréal Produits de Luxe International;3;;;;;
+La Fourchette;3;;;;;
+ADLPartner;2;;;;;
+Bouygues Télécom;2;;;;;
+CARREFOUR VOYAGES;2;;;;;
+CSP BUT INTERNATIONAL;2;;;;;
+Carrefour Banque;2;;;;;
+Cartier International;2;;;;;
+FINANCIERE AMUSE BIDCO;2;;;;;
+FNAC DARTY PARTICIPATIONS ET SERVICES;2;;;;;
+FUNECAP HOLDING;2;;;;;
+L'Oréal Canada;2;;;;;
+LVMH MOET HENNESSY LOUIS VUITTON;2;;;;;
+META PLATFORMS IRELAND LIMITED;2;;;;;
+Maisons du Monde France SAS;2;;;;;
+PICARD SURGELES;2;;;;;
+Saint-Gobain Distribution Bâtiment France;2;;;;;
+Schmidt Groupe SAS;2;;;;;
+TOTALENERGIES MARKETING FRANCE;2;;;;;
+Weavenn;2;;;;;
+Agorastore;1;;;;;
+Alice Pizza S.p.A.;1;;;;;
+Autumnpaper Ltd t/as Alexander McQueen;1;;;;;
+BAYARD;1;;;;;
+BEL;1;;;;;
+Balenciaga S.A.S;1;;;;;
+Bedrock Streaming;1;;;;;
+Boucheron SAS;1;;;;;
+Bouygues Immobilier;1;;;;;
+COMPAGNIE DES ALPES;1;;;;;
+COMPAGNIE DES ANIMAUX (CDA);1;;;;;
+CONSO REGIE;1;;;;;
+Cromology;1;;;;;
+Crédit Mutuel / CIC;1;;;;;
+FBD Group;1;;;;;
+Fioulmarket.fr;1;;;;;
+FrenchFounders;1;;;;;
+GIE AG2R REUNICA;1;;;;;
+GIVAUDAN FRANCE FF;1;;;;;
+Goodays;1;;;;;
+Groupe Atlantic;1;;;;;
+HILTI Aktiengesellschaft;1;;;;;
+HYUNDAI MOTOR FRANCE;1;;;;;
+Hermès - Canada;1;;;;;
+L'Oréal España, S.A.U;1;;;;;
+L'Oréal Europe Zone;1;;;;;
+LACOSTE E-COMMERCE;1;;;;;
+LECTRA;1;;;;;
+LEFEBVRE DALLOZ SERVICES;1;;;;;
+La Maison du Chocolat;1;;;;;
+La Nouvelle République;1;;;;;
+Laboratoires de Biologie Végétale Yves Rocher;1;;;;;
+Legallais;1;;;;;
+L’Oréal Travel Retail;1;;;;;
+M6 Distribution Digital;1;;;;;
+MATMUT;1;;;;;
+ODDO BHF;1;;;;;
+PIERRE BALMAIN SAS;1;;;;;
+REXEL DEVELOPPEMENT SAS;1;;;;;
+SAS EQUIPEMENT DE LA MAISON;1;;;;;
+SIG;1;;;;;
+SNC L-COMMERCE;1;;;;;
+SODEXO SA;1;;;;;
+Unibail-Rodamco;1;;;;;
+Webedia;1;;;;;
+Zabaldano Avocats;1;;;;;
+imagino France, n°922 041 470;1;;;;;
+
+=== REFERENTIEL SELLSY COMPLET (pour copier-coller ID/nom) ===
+sellsy_company_id;sellsy_company_name;sellsy_type
+57866765;123Test321;client
+57866799;A Random Company;client
+57866865;Abeille Assurances;client
+57866866;Abeille Assurances;client
+57866713;Air Liquide;prospect
+57866791;Americaine one;client
+57866771;Converteo;client
+57866788;Ent. VFE 1;client
+57866778;Entreprise américiane;client
+57866832;Inditex;client
+57866767;Institut de l'Entreprise;client
+57866766;Nomadia;client
+57866769;Plus que PRO;client
+57866768;Renault;client
+57866776;SIRET EN 13;client
+40438031;Société A (test);prospect
+40438032;Société B (test);prospect
+57866775;TEst 2 with same SIRET than in Sellsy;client
+57866777;Test 3;client
+57866774;Test Siret 1 et 2;client
+57866773;Test entreprise with simple SIRET;client
+57866792;VFE 1402;client
+57866796;[TEST-ENT-FB-001] Entreprise;client
+57866797;[TEST-ENT-FB-001] Entreprise;client
+57866798;[TEST-ENT-FB-001] Entreprise cool;client
+57866729;[TEST]  FNAC;client
+57866721;[TEST] CONFO NEW;client
+57866795;[TEST] Fnac;client
+
+57866719;[TEST]BUT;client
+57866793;[TEST]Camille 20 fevrier;client
+57866731;[TEST]Chanel;client
+57866727;[TEST]Confo;client
+
+57866716;[TEST]Figaro;client
+57866722;[TEST]LVMH;client
+57866726;[TEST]MICHELIN 2;client
+57866730;[TEST]Maif;client
+57866732;[TEST]Maxi test;client
+57866715;[TEST]Michelin;client
+57866717;[TEST]OVH;client
+57866728;[TEST]SNCF;client
+57866794;vfe sans adresse;client

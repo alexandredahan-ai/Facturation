@@ -1,55 +1,31 @@
 import pytest
 from main_regie import correlate_tjm
 
-def test_correlate_tjm_logic():
-    # Données mock simulées
-    mock_assignments = [
-        {
-            "id": 100,
-            "project_id": 999,
-            "daily_fee_info": {"amount": 500.0},
-            "custom_fields": {"sellsy_company_id": 12345}
-        },
-        {
-            "id": 200,
-            "project_id": 888,
-            "daily_fee_info": {"amount": 600.0},
-            "custom_fields": {"sellsy_company_id": "54321"} # Test string casting
-        },
-        {
-            "id": 300, # Client invalide
-            "project_id": 777,
-            "daily_fee_info": {"amount": 700.0},
-            "custom_fields": {}
-        }
-    ]
 
-    mock_time_entries = [
-        # Valide (500€ x 1)
-        {"id": 1, "assignment_id": 100, "duration": 1.0, "approval_status": "approved"},
-        # Valide Demi journée (600€ x 0.5)
-        {"id": 2, "assignment_id": 200, "duration": 1.0, "starts_at_midday": True, "approval_status": "approved"},
-        # Ignoré : pending
-        {"id": 3, "assignment_id": 100, "duration": 1.0, "approval_status": "pending"},
-        # Ignoré : pas de TJM link (client invalid)
-        {"id": 4, "assignment_id": 300, "duration": 1.0, "approval_status": "approved"},
-        # Ignoré : pas de assignation mappée
-        {"id": 5, "assignment_id": 999, "duration": 1.0, "approval_status": "approved"}
-    ]
+def test_correlate_tjm_logic(mock_napta_time_entries, mock_napta_assignments, mock_napta_projects):
+    """
+    Test unitaire du croisement Time Entries × Assignments × Projects.
+    Structure API réelle Napta v0.
+    Vérifie : calcul TJM × workload, regroupement par client, exclusion non-validées.
+    """
+    result = correlate_tjm(mock_napta_time_entries, mock_napta_assignments, mock_napta_projects)
 
-    sellsy_payloads = correlate_tjm(mock_time_entries, mock_assignments)
+    # 2 clients attendus : "Acme Corp" (projet 1) et "Globex Inc" (projet 2)
+    assert "Acme Corp" in result
+    assert "Globex Inc" in result
 
-    # 12345: 1 ligne (500)
-    assert 12345 in sellsy_payloads
-    assert len(sellsy_payloads[12345]) == 1
-    assert sellsy_payloads[12345][0]["amount"] == 500.0
+    # Acme Corp : 1 time entry validée (user 100, project 1, workload 1.0, TJM 800€)
+    acme_items = result["Acme Corp"]
+    assert len(acme_items) == 1
+    assert acme_items[0]["amount"] == 800.0  # 1.0 jour × 800€
 
-    # 54321: 1 ligne (300) car demi-journée
-    assert 54321 in sellsy_payloads
-    assert len(sellsy_payloads[54321]) == 1
-    assert sellsy_payloads[54321][0]["amount"] == 300.0
+    # Globex Inc : 2 demi-journées validées (user 200, project 2, workload 0.5, TJM 1000€)
+    globex_items = result["Globex Inc"]
+    assert len(globex_items) == 2
+    assert globex_items[0]["amount"] == 500.0  # 0.5 jour × 1000€
+    assert globex_items[1]["amount"] == 500.0
 
-    # Clés inexistantes ou ignorées
-    for k in sellsy_payloads.keys():
-        assert k in [12345, 54321]
+    # Pas de client pour le projet orphelin (999) car pas d'assignment
+    # L'entry user 300 / project 999 est validée mais ignorée (pas de TJM)
+    assert len(result) == 2
 

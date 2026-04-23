@@ -40,9 +40,9 @@ description: "Task list template for feature implementation"
 ### Phase 4: User Story 2 - Automatisation de la facturation Régie / Staffing
 *Goal: Extract validated time entries from Napta, correlate with TJM, and push to Sellsy.*
 
-- [ ] T012 [P] [US2] Create mock JSON data generators matching Napta's API `Time Entry` and `Assignment` entities in `tests/conftest.py`
-- [ ] T013 [US2] Implement the OAuth2 token lifecycle manager (singleton, expires in 2h, refreshing at T-5min) inside `connectors/napta_client.py` 
-- [ ] T014 [US2] Implement API consumption in `connectors/napta_client.py` with cursor pagination, rate-limit throttling (100 req/10s), and `utils/resilience.py` backoff
+- [x] T012 [P] [US2] Create mock JSON data generators matching Napta's API `Time Entry` and `Assignment` entities in `tests/conftest.py`
+- [x] T013 [US2] Implement the OAuth2 token lifecycle manager (singleton, expires in 24h, refreshing at T-5min) inside `connectors/napta_client.py` 
+- [x] T014 [US2] Implement API consumption in `connectors/napta_client.py` with cursor pagination, rate-limit throttling (100 req/10s), batched [in] filters, and `utils/resilience.py` backoff
 - [x] T015 [US2] Write unit tests in `tests/test_connectors/test_napta.py` assessing time-entry filters (`approval_status=approved`) and half-day mapping logic (`starts_at_midday`)
 - [x] T016 [US2] Implement the Régie orchestrator in `main_regie.py` that processes Napta metrics and posts Draft Invoices to `sellsy_client`
 

@@ -142,3 +142,45 @@ class SellsyClient:
         except requests.RequestException as e:
             app_logger.error(f"Erreur API Sellsy lors de la facturation {pipeline_name} (Client {client_id}): {str(e)}")
             raise
+
+    @http_retry_decorator(max_attempts=3, min_wait=1, max_wait=10)
+    def list_invoices(self, company_id: int = None, status: str = None, limit: int = 25) -> List[Dict[str, Any]]:
+        """
+        Récupère la liste des factures Sellsy, avec filtrage optionnel par company et statut.
+        Utile pour vérifier l'existence de brouillons avant re-création (déduplication).
+        """
+        url = f"{self.base_url}/invoices"
+        params = {"limit": limit}
+        if status:
+            params["status"] = status
+
+        try:
+            response = requests.get(url, params=params, headers=self._get_headers())
+            response.raise_for_status()
+            invoices = response.json().get("data", [])
+
+            # Filtrage côté client par company_id (Sellsy V2 ne supporte pas ce filtre en query param)
+            if company_id:
+                invoices = [
+                    inv for inv in invoices
+                    if any(r.get("id") == company_id and r.get("type") == "company" for r in inv.get("related", []))
+                ]
+
+            return invoices
+        except requests.RequestException as e:
+            app_logger.error(f"Erreur lors de la récupération des factures Sellsy: {e}")
+            raise
+
+    @http_retry_decorator(max_attempts=3, min_wait=1, max_wait=10)
+    def get_invoice(self, invoice_id: int) -> dict:
+        """
+        Récupère le détail d'une facture Sellsy par son ID.
+        """
+        url = f"{self.base_url}/invoices/{invoice_id}"
+        try:
+            response = requests.get(url, headers=self._get_headers())
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            app_logger.error(f"Erreur lors de la récupération de la facture {invoice_id}: {e}")
+            raise

@@ -23,6 +23,7 @@ class Config(BaseSettings):
     napta_client_secret: str = Field(..., validation_alias="NAPTA_CLIENT_SECRET")
     napta_auth_url: str = Field("https://auth.napta.io/oauth/token", validation_alias="NAPTA_AUTH_URL")
     napta_api_base: str = Field("https://api.napta.io/integration/v0", validation_alias="NAPTA_API_BASE")
+    napta_audience: str = Field("integration", validation_alias="NAPTA_AUDIENCE")
     
     # Sellsy API
     sellsy_client_id: str = Field(..., validation_alias="SELLSY_CLIENT_ID")

@@ -1,0 +1,4 @@
+napta_client_name;napta_nb_projets;sellsy_company_id;sellsy_company_name;sellsy_type;match_score;VALIDE (oui/non)
+Abeille Assurances;2;57866865;Abeille Assurances;client;1.0;oui
+CONVERTEO;53;57866771;Converteo;client;1.0;oui
+MAIF;3;57866730;[TEST]Maif;client;0.85;oui
